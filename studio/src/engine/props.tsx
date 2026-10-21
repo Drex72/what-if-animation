@@ -193,3 +193,138 @@ export const CookieStack: React.FC<{ x: number; y: number; n: number; s?: number
     ))}
   </g>
 );
+
+// ---------- night things: the bedside clock, the calendar, books, the laptop ----------
+/** A digital alarm clock, side-on: x, y the middle of its base, `text` on the display (00:00), glowing when `on`. */
+export const AlarmClock: React.FC<{ x: number; y: number; s?: number; text: string; on?: number }> = ({ x, y, s = 1, text, on = 1 }) => (
+  <g transform={`translate(${x} ${y}) scale(${s})`}>
+    <ellipse cx={8} cy={2} rx={128} ry={14} fill="#000" opacity={0.35} />
+    <rect x={-120} y={-118} width={240} height={112} rx={22} fill="#24202C" />
+    <rect x={-120} y={-118} width={240} height={10} rx={5} fill="#3A3444" />
+    <rect x={-104} y={-102} width={208} height={80} rx={12} fill="#120A0C" />
+    <circle cx={0} cy={-62} r={120} fill="url(#g3red)" opacity={0.35 * on} style={{ mixBlendMode: 'screen' }} />
+    <text x={0} y={-40} textAnchor="middle" fontFamily={FONT.ui} fontSize={64} fill="#FF5A3A" opacity={0.25 + 0.75 * on} style={{ filter: on > 0.5 ? 'drop-shadow(0 0 10px #FF3A2A)' : undefined }}>
+      {text}
+    </text>
+    <rect x={-96} y={-6} width={22} height={8} rx={3} fill="#1A1620" />
+    <rect x={74} y={-6} width={22} height={8} rx={3} fill="#1A1620" />
+  </g>
+);
+
+/**
+ * A month on the wall, front-on: a picture on top (hills under a moon), the days below. Days up to `crossed` have a red
+ * cross; the next day's cross draws on as `drawing` goes 0 to 1. x, y is the top centre, w the width.
+ */
+export const WallCalendar: React.FC<{ x: number; y: number; w?: number; crossed?: number; drawing?: number; rot?: number }> = ({ x, y, w = 300, crossed = 0, drawing = 0, rot = 0 }) => {
+  const h = w * 1.32;
+  const top = h * 0.36;
+  const cw = (w - w * 0.1) / 7;
+  const ch = (h - top - w * 0.14) / 5;
+  const first = 3; // the 1st falls on the fourth column
+  const cross = (cx: number, cy: number, p: number, k: number) => {
+    const r = Math.min(cw, ch) * 0.36;
+    const a = Math.min(1, p * 2);
+    const b = Math.max(0, p * 2 - 1);
+    return (
+      <g key={`x${k}`} stroke="#D93A3A" strokeWidth={w * 0.016} strokeLinecap="round">
+        {a > 0 ? <path d={`M ${cx - r} ${cy - r} L ${cx - r + 2 * r * a} ${cy - r + 2 * r * a}`} /> : null}
+        {b > 0 ? <path d={`M ${cx + r} ${cy - r} L ${cx + r - 2 * r * b} ${cy - r + 2 * r * b}`} /> : null}
+      </g>
+    );
+  };
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+      <rect x={-w / 2 + w * 0.03} y={w * 0.03} width={w} height={h} fill="#000" opacity={0.35} />
+      <rect x={-w / 2} y={0} width={w} height={h} fill="#EFE8DA" />
+      <rect x={-w / 2 + w * 0.05} y={w * 0.05} width={w * 0.9} height={top - w * 0.05} fill="#22264A" />
+      <circle cx={w * 0.2} cy={top * 0.38} r={w * 0.06} fill="#F1F3FF" />
+      <path d={`M ${-w * 0.45} ${top} L ${-w * 0.2} ${top * 0.55} L ${0} ${top * 0.8} L ${w * 0.18} ${top * 0.48} L ${w * 0.45} ${top} Z`} fill="#3E4A7A" />
+      <rect x={-w / 2} y={top + w * 0.01} width={w} height={w * 0.06} fill="#D9534F" />
+      {Array.from({ length: 35 }).map((_, i) => {
+        const day = i - first + 1;
+        const cx = -w / 2 + w * 0.05 + (i % 7) * cw + cw / 2;
+        const cy = top + w * 0.1 + Math.floor(i / 7) * ch + ch / 2;
+        if (day < 1 || day > 31) return null;
+        return (
+          <g key={i}>
+            <text x={cx} y={cy + w * 0.022} textAnchor="middle" fontFamily={FONT.ui} fontSize={w * 0.06} fill="#3A3444">
+              {day}
+            </text>
+            {day <= crossed ? cross(cx, cy, 1, i) : day === crossed + 1 && drawing > 0 ? cross(cx, cy, drawing, i) : null}
+          </g>
+        );
+      })}
+      <circle cx={0} cy={-w * 0.02} r={w * 0.025} fill="#1A1620" />
+    </g>
+  );
+};
+/** Where day `day` sits on a WallCalendar drawn at (x, y, w) with no rotation: for a hand holding the marker there. */
+export const calendarDay = (x: number, y: number, w: number, day: number) => {
+  const h = w * 1.32;
+  const top = h * 0.36;
+  const cw = (w - w * 0.1) / 7;
+  const ch = (h - top - w * 0.14) / 5;
+  const i = day + 3 - 1;
+  return { x: x - w / 2 + w * 0.05 + (i % 7) * cw + cw / 2, y: y + top + w * 0.1 + Math.floor(i / 7) * ch + ch / 2, r: Math.min(cw, ch) * 0.36 };
+};
+
+/** An open book from in front and a little above: x, y the middle of the spine's foot. `turn` (0..1) lifts a page over. */
+export const OpenBook: React.FC<{ x: number; y: number; w?: number; rot?: number; turn?: number; cover?: string }> = ({ x, y, w = 200, rot = 0, turn = 0, cover = '#7A4A4A' }) => {
+  const h = w * 0.42;
+  const page = (side: 1 | -1) => `M 0 0 Q ${side * w * 0.22} ${-h * 0.18} ${side * w * 0.48} ${-h * 0.06} L ${side * w * 0.44} ${-h} Q ${side * w * 0.22} ${-h * 1.12} 0 ${-h * 0.94} Z`;
+  const tx = Math.cos(turn * Math.PI);
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+      <ellipse cx={0} cy={4} rx={w * 0.55} ry={w * 0.06} fill="#000" opacity={0.35} />
+      <path d={`M ${-w * 0.52} ${-h * 0.02} L ${w * 0.52} ${-h * 0.02} L ${w * 0.48} ${-h * 1.02} L ${-w * 0.48} ${-h * 1.02} Z`} fill={cover} />
+      <path d={page(-1)} fill="#EFE6D2" />
+      <path d={page(1)} fill="#F7F0E0" />
+      {[0.25, 0.4, 0.55, 0.7].map((k, i) => (
+        <g key={i} stroke="#9A907E" strokeWidth={w * 0.012} strokeLinecap="round">
+          <path d={`M ${-w * 0.4} ${-h * k - h * 0.05} L ${-w * 0.08} ${-h * k}`} />
+          <path d={`M ${w * 0.08} ${-h * k} L ${w * 0.4} ${-h * k - h * 0.05}`} />
+        </g>
+      ))}
+      {turn > 0 && turn < 1 ? <path d={`M 0 ${-h * 0.94} Q ${tx * w * 0.22} ${-h * 1.4} ${tx * w * 0.42} ${-h * 1.1} L ${tx * w * 0.46} ${-h * 0.1} Q ${tx * w * 0.22} ${-h * 0.5} 0 0 Z`} fill="#FFF8EA" stroke="#C9BCA2" strokeWidth={2} /> : null}
+      <path d={`M 0 0 L 0 ${-h * 0.94}`} stroke="#B9AC92" strokeWidth={3} />
+    </g>
+  );
+};
+
+const BOOK_COLS = ['#7A4A4A', '#4A5A7A', '#8A7A4A', '#4A6A5A', '#6A4A6A', '#9A6A4A', '#3E4A62', '#7A6252'];
+/** A closed book lying flat, side-on: x, y the middle of its base. */
+export const BookFlat: React.FC<{ x: number; y: number; w?: number; th?: number; i?: number; rot?: number }> = ({ x, y, w = 150, th = 22, i = 0, rot = 0 }) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+    <rect x={-w / 2} y={-th} width={w} height={th} rx={3} fill={BOOK_COLS[i % BOOK_COLS.length]} />
+    <rect x={-w / 2 + 6} y={-th + 4} width={w - 10} height={th - 8} fill="#EFE6D2" />
+    <rect x={-w / 2} y={-th} width={8} height={th} rx={3} fill={BOOK_COLS[(i + 3) % BOOK_COLS.length]} />
+  </g>
+);
+/** A tower of finished books, each a little askew: x, y the middle of its base, n books. */
+export const BookTower: React.FC<{ x: number; y: number; n: number; s?: number }> = ({ x, y, n, s = 1 }) => (
+  <g>
+    <ellipse cx={x + 8 * s} cy={y + 2} rx={90 * s} ry={10 * s} fill="#000" opacity={0.3} />
+    {Array.from({ length: n }).map((_, i) => (
+      <BookFlat key={i} x={x + Math.sin(i * 2.3) * 7 * s} y={y - i * 20 * s} w={(130 + Math.sin(i * 1.7) * 20) * s} th={18 * s} i={i} rot={Math.sin(i * 1.3) * 3} />
+    ))}
+  </g>
+);
+
+/** A laptop lid from behind, open toward someone: x, y the middle of the hinge; the screen's light spills round it. */
+export const LaptopBack: React.FC<{ x: number; y: number; w?: number; glow?: number; tilt?: number }> = ({ x, y, w = 180, glow = 1, tilt = 0 }) => {
+  const h = w * 0.66;
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${tilt})`}>
+      <circle cx={0} cy={-h * 0.6} r={w * 1.3} fill="url(#g3cool)" opacity={0.45 * glow} style={{ mixBlendMode: 'screen' }} />
+      <path d={`M ${-w / 2} 0 L ${w / 2} 0 L ${w / 2 - 6} ${-h} L ${-w / 2 + 6} ${-h} Z`} fill="#3A3C4C" />
+      <path d={`M ${-w / 2 + 6} ${-h} L ${w / 2 - 6} ${-h}`} stroke="#BFD6FF" strokeWidth={4} opacity={0.9 * glow} />
+      <path d={`M ${-w / 2} 0 L ${-w / 2 + 6} ${-h}`} stroke="#BFD6FF" strokeWidth={3} opacity={0.6 * glow} />
+      <path d={`M ${w / 2} 0 L ${w / 2 - 6} ${-h}`} stroke="#BFD6FF" strokeWidth={3} opacity={0.6 * glow} />
+      {/* stickers: a moon and a star */}
+      <circle cx={-w * 0.18} cy={-h * 0.6} r={w * 0.07} fill="#E9C46A" />
+      <circle cx={-w * 0.15} cy={-h * 0.63} r={w * 0.06} fill="#3A3C4C" />
+      <path transform={`translate(${w * 0.16} ${-h * 0.38}) scale(${w / 400})`} d="M 0 -40 L 10 -12 L 40 -12 L 16 6 L 25 36 L 0 18 L -25 36 L -16 6 L -40 -12 L -10 -12 Z" fill="#F28C6A" />
+      <rect x={-w / 2 - 8} y={-4} width={w + 16} height={10} rx={4} fill="#4A4C5C" />
+    </g>
+  );
+};
