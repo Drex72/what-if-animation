@@ -74,6 +74,8 @@ export type Pose = {
   handL: HandKind;
   handR: HandKind;
   sway: number; // secondary motion: how far loose things (the hood's drawstrings) swing, degrees-ish
+  glint?: number; // 0..1 the eyes light up in the power's colour (set it after poseAt: it isn't interpolated)
+  glintColor?: string;
 };
 
 export const basePose: Pose = {
@@ -217,7 +219,7 @@ export const reachAngle = (pose: Pose, target: P) => {
   return world - pose.tilt;
 };
 
-const Face: React.FC<{ expr: Expr; blink: number; look: number; glasses: number; yaw?: number; ink?: string }> = ({ expr, blink, look, glasses, yaw = 0, ink = C.ink }) => {
+const Face: React.FC<{ expr: Expr; blink: number; look: number; glasses: number; yaw?: number; ink?: string; glint?: number; glintColor?: string }> = ({ expr, blink, look, glasses, yaw = 0, ink = C.ink, glint = 0, glintColor = '#8FF0FF' }) => {
   const ex = look * 7;
   const ay = Math.min(1, Math.abs(yaw));
   const farHidden = ay > 0.72;
@@ -281,6 +283,19 @@ const Face: React.FC<{ expr: Expr; blink: number; look: number; glasses: number;
       {brows[expr] ? <path d={brows[expr]} stroke={ink} strokeWidth={5} fill="none" strokeLinecap="round" /> : null}
       {mouth[expr]}
       {expr === 'shock' || expr === 'oops' ? <path d={`M 52 ${HEAD.y - 30} q 6 10 0 16 q -6 -6 0 -16 Z`} fill="#8FD3FF" /> : null}
+      {/* a power lighting the eyes: a soft halo, a bright iris, a white catchlight (none while the lids are shut) */}
+      {glint > 0.01 && blink < 0.95
+        ? [-21, 21].map((cx) =>
+            farHidden && Math.sign(cx) === farSide ? null : (
+              <g key={`gl${cx}`} opacity={Math.min(1, glint)}>
+                <circle cx={cx + ex} cy={eyeY} r={17} fill={glintColor} opacity={0.2} />
+                <circle cx={cx + ex} cy={eyeY} r={12} fill={glintColor} opacity={0.28} />
+                <ellipse cx={cx + ex} cy={eyeY + (lid ? 3 : 0)} rx={8} ry={Math.max(2, 11 * open)} fill={glintColor} />
+                <circle cx={cx + ex + 2.5} cy={eyeY - 3} r={2.6} fill="#FFFFFF" />
+              </g>
+            ),
+          )
+        : null}
       {glasses > 0.01 ? (
         <g opacity={glasses} transform={`translate(0 ${(1 - glasses) * -60})`}>
           {/* classic shades: a full bar across, two big lenses, one bright glint so it reads at feed size */}
@@ -383,7 +398,7 @@ export const Hero: React.FC<{ pose: Pose; shadow?: number; rimId?: string; look?
         // short combed-back hair with a hard side parting
         <path transform={`translate(${-pose.yaw * 14} 0)`} d={`M -60 ${HEAD.y - 18} Q -64 ${HEAD.y - 70} 4 ${HEAD.y - 68} Q 64 ${HEAD.y - 64} 60 ${HEAD.y - 18} Q 52 ${HEAD.y - 44} 18 ${HEAD.y - 46} L 12 ${HEAD.y - 54} L 6 ${HEAD.y - 46} Q -44 ${HEAD.y - 46} -60 ${HEAD.y - 18} Z`} fill={L.hair} />
       ) : null}
-      <Face expr={pose.expr} blink={pose.blink} look={pose.look} glasses={pose.glasses} yaw={pose.yaw} ink={L.face} />
+      <Face expr={pose.expr} blink={pose.blink} look={pose.look} glasses={pose.glasses} yaw={pose.yaw} ink={L.face} glint={pose.glint} glintColor={pose.glintColor} />
       {L.extra === 'curls'
         ? [-150, -125, -100, -78, -55, -30].map((deg, k) => {
             const a = (deg * Math.PI) / 180;

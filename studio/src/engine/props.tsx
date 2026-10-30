@@ -328,3 +328,135 @@ export const LaptopBack: React.FC<{ x: number; y: number; w?: number; glow?: num
     </g>
   );
 };
+
+// ---------- pizza, a phone, a paper ball ----------
+const PEPPERONI: [number, number, number][] = [
+  [0.42, -0.1, 0.11],
+  [0.66, 0.12, 0.12],
+  [0.7, -0.16, 0.1],
+  [0.26, 0.05, 0.08],
+];
+/**
+ * A slice of pizza from above: x, y the tip, pointing along `rot` (0 = tip at the left, crust to the right), `len` from
+ * tip to crust. `bite` (0..1) eats back from the tip; `drip` hangs a string of cheese off the bitten edge.
+ */
+export const PizzaSlice: React.FC<{ x: number; y: number; len?: number; rot?: number; bite?: number; drip?: number; shadow?: number }> = ({ x, y, len = 200, rot = 0, bite = 0, drip = 0, shadow = 1 }) => {
+  const L = len;
+  const half = L * 0.36; // half the crust's width
+  const b = bite * L * 0.42;
+  const wAt = (d: number) => (half * d) / L;
+  // the bitten edge: tooth-sized scallops across the wedge at distance b from the tip
+  const scallops = (() => {
+    const w = wAt(b);
+    let d = `M ${b} ${-w}`;
+    for (let i = 0; i < 3; i++) {
+      const y0 = -w + (2 * w * i) / 3;
+      const y1 = -w + (2 * w * (i + 1)) / 3;
+      d += ` Q ${b - L * 0.07} ${(y0 + y1) / 2} ${b} ${y1}`;
+    }
+    return d;
+  })();
+  const body = b > 0 ? `${scallops} L ${L} ${half} L ${L} ${-half} Z` : `M 0 0 L ${L} ${half} L ${L} ${-half} Z`;
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+      {shadow > 0 ? <path d={body} transform="translate(10 14)" fill="#000" opacity={0.3 * shadow} /> : null}
+      <path d={body} fill="#F2C14E" stroke="#C9862E" strokeWidth={L * 0.012} strokeLinejoin="round" />
+      {/* melted lighter pools, and the sauce showing at the edge */}
+      <ellipse cx={L * 0.55} cy={-L * 0.02} rx={L * 0.14} ry={L * 0.05} fill="#FBDA7A" opacity={0.8} />
+      <ellipse cx={L * 0.78} cy={L * 0.1} rx={L * 0.08} ry={L * 0.035} fill="#FBDA7A" opacity={0.8} />
+      <path d={`M ${L * 0.86} ${-half * 0.84} Q ${L * 0.9} ${-half * 0.5} ${L * 0.87} ${-half * 0.2}`} stroke="#D2552E" strokeWidth={L * 0.03} fill="none" strokeLinecap="round" opacity={0.7} />
+      {PEPPERONI.map(([d, o, r], i) =>
+        d * L > b + r * L ? (
+          <g key={i}>
+            <circle cx={d * L} cy={o * L} r={r * L} fill="#B5452E" />
+            <circle cx={d * L - r * L * 0.2} cy={o * L - r * L * 0.25} r={r * L * 0.55} fill="#C9583A" />
+            <circle cx={d * L + r * L * 0.35} cy={o * L + r * L * 0.2} r={r * L * 0.12} fill="#8A2E20" />
+          </g>
+        ) : null,
+      )}
+      {/* the crust: a puffed band along the wide end, lit on top */}
+      <path d={`M ${L - L * 0.02} ${-half - L * 0.03} Q ${L + L * 0.1} 0 ${L - L * 0.02} ${half + L * 0.03} L ${L - L * 0.12} ${half * 0.92} Q ${L - L * 0.04} 0 ${L - L * 0.12} ${-half * 0.92} Z`} fill="#D9954A" stroke="#A86A2E" strokeWidth={L * 0.012} strokeLinejoin="round" />
+      <path d={`M ${L - L * 0.04} ${-half * 0.8} Q ${L + L * 0.05} 0 ${L - L * 0.04} ${half * 0.8}`} stroke="#F0B870" strokeWidth={L * 0.025} fill="none" strokeLinecap="round" opacity={0.8} />
+      {drip > 0 && b > 0 ? <path d={`M ${b - L * 0.03} ${wAt(b) * 0.2} q ${-L * 0.04} ${L * 0.25 * drip} ${-L * 0.01} ${L * 0.45 * drip}`} stroke="#F7CF62" strokeWidth={L * 0.028} fill="none" strokeLinecap="round" /> : null}
+    </g>
+  );
+};
+
+/**
+ * An open, empty pizza box on a counter, from the front and a little above: x, y the middle of its front edge. `lid`
+ * stands the lid up behind it; without it the lid is folded back out of sight.
+ */
+export const PizzaBox: React.FC<{ x: number; y: number; w?: number; lid?: boolean }> = ({ x, y, w = 260, lid: withLid = true }) => {
+  const d = w * 0.34; // the base's depth on screen
+  const lid = w * 0.62;
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <ellipse cx={0} cy={4} rx={w * 0.56} ry={w * 0.05} fill="#000" opacity={0.3} />
+      {/* the lid, up against the back */}
+      {withLid ? <path d={`M ${-w / 2 + 10} ${-d} L ${w / 2 - 10} ${-d} L ${w / 2 - 26} ${-d - lid} L ${-w / 2 + 26} ${-d - lid} Z`} fill="#A88A62" /> : null}
+      {/* the base: grease rings and crumbs where the pizza was */}
+      <path d={`M ${-w / 2} 0 L ${w / 2} 0 L ${w / 2 - 10} ${-d} L ${-w / 2 + 10} ${-d} Z`} fill="#C9AD82" />
+      <ellipse cx={0} cy={-d * 0.5} rx={w * 0.36} ry={d * 0.36} fill="#B98E52" opacity={0.35} />
+      <ellipse cx={-w * 0.12} cy={-d * 0.55} rx={w * 0.08} ry={d * 0.12} fill="#A87A40" opacity={0.4} />
+      {[[-0.2, -0.4], [0.1, -0.6], [0.25, -0.35], [-0.05, -0.25], [0.18, -0.7]].map(([cx, cy], i) => (
+        <circle key={i} cx={cx * w} cy={cy * d} r={3 + (i % 2) * 2} fill="#C98A3E" />
+      ))}
+      <rect x={-w / 2} y={-6} width={w} height={12} fill="#A8885E" />
+      <rect x={-w / 2} y={-6} width={w} height={2.5} fill="#FFE2B0" opacity={0.5} />
+    </g>
+  );
+};
+
+/**
+ * A phone, from above or held: x, y its centre, w its width, `rot` its turn. Dark and glossy when `on` is 0; lit when
+ * `on` > 0, showing an incoming call (`caller`, an avatar, a red and a green button). `buzz` draws vibration marks.
+ */
+export const Phone: React.FC<{ x: number; y: number; w?: number; rot?: number; on?: number; caller?: string; buzz?: number; f?: number }> = ({ x, y, w = 200, rot = 0, on = 0, caller = 'MUM', buzz = 0, f = 0 }) => {
+  const h = w * 2.05;
+  const jx = buzz > 0 ? Math.sin(f * 9.1) * w * 0.012 * buzz : 0;
+  const s = w / 200;
+  return (
+    <g transform={`translate(${x + jx} ${y}) rotate(${rot})`}>
+      <rect x={-w / 2 + 8 * s} y={-h / 2 + 12 * s} width={w} height={h} rx={w * 0.16} fill="#000" opacity={0.35} />
+      {on > 0 ? <circle cx={0} cy={0} r={w * 1.5} fill="url(#g3cool)" opacity={0.55 * on} style={{ mixBlendMode: 'screen' }} /> : null}
+      <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={w * 0.16} fill="#16151C" stroke="#3A3846" strokeWidth={4 * s} />
+      <rect x={-w / 2 + w * 0.06} y={-h / 2 + w * 0.06} width={w * 0.88} height={h - w * 0.12} rx={w * 0.11} fill="#0B0A10" />
+      {on > 0 ? (
+        <g opacity={on}>
+          <rect x={-w / 2 + w * 0.06} y={-h / 2 + w * 0.06} width={w * 0.88} height={h - w * 0.12} rx={w * 0.11} fill="#2C3A5E" />
+          <rect x={-w / 2 + w * 0.06} y={-h / 2 + w * 0.06} width={w * 0.88} height={(h - w * 0.12) * 0.55} rx={w * 0.11} fill="#4A6A9E" opacity={0.6} />
+          {/* the caller: a round avatar with a bob of hair */}
+          <circle cx={0} cy={-h * 0.18} r={w * 0.2} fill="#F6EFE3" />
+          <path d={`M ${-w * 0.22} ${-h * 0.12} Q ${-w * 0.26} ${-h * 0.33} 0 ${-h * 0.33} Q ${w * 0.26} ${-h * 0.33} ${w * 0.22} ${-h * 0.12} L ${w * 0.15} ${-h * 0.12} Q ${w * 0.14} ${-h * 0.24} ${w * 0.04} ${-h * 0.26} Q ${-w * 0.1} ${-h * 0.22} ${-w * 0.15} ${-h * 0.12} Z`} fill="#5A3226" />
+          <text x={0} y={0} textAnchor="middle" fontFamily={FONT.ui} fontSize={w * 0.17} fill="#F6EFE3" letterSpacing={w * 0.02}>
+            {caller}
+          </text>
+          <circle cx={-w * 0.22} cy={h * 0.32} r={w * 0.1} fill="#E4544A" />
+          <circle cx={w * 0.22} cy={h * 0.32} r={w * 0.1} fill="#4CC774" />
+          <path d={`M ${w * 0.17} ${h * 0.3} q ${w * 0.05} ${w * 0.08} ${w * 0.1} ${w * 0.04}`} stroke="#F6EFE3" strokeWidth={w * 0.025} fill="none" strokeLinecap="round" />
+        </g>
+      ) : (
+        <path d={`M ${-w * 0.3} ${-h * 0.42} L ${w * 0.05} ${-h * 0.42} L ${-w * 0.3} ${-h * 0.1} Z`} fill="#FFFFFF" opacity={0.06} />
+      )}
+      <rect x={-w * 0.12} y={-h / 2 + w * 0.1} width={w * 0.24} height={w * 0.05} rx={w * 0.025} fill="#000" />
+      {buzz > 0
+        ? [-1, 1].map((sd) => (
+            <g key={sd} stroke="#CFE6FF" strokeWidth={6 * s} strokeLinecap="round" fill="none" opacity={0.75 * buzz}>
+              <path d={`M ${sd * (w / 2 + w * 0.12)} ${-h * 0.18} q ${sd * w * 0.06} ${h * 0.06} 0 ${h * 0.12}`} />
+              <path d={`M ${sd * (w / 2 + w * 0.24)} ${-h * 0.24} q ${sd * w * 0.09} ${h * 0.12} 0 ${h * 0.24}`} />
+            </g>
+          ))
+        : null}
+    </g>
+  );
+};
+
+/** A crumpled paper ball: x, y its centre, r its radius, `rot` turns its creases as it tumbles. */
+export const PaperBall: React.FC<{ x: number; y: number; r?: number; rot?: number }> = ({ x, y, r = 40, rot = 0 }) => (
+  <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+    <path d={`M ${-r} ${-r * 0.1} L ${-r * 0.7} ${-r * 0.75} L ${-r * 0.05} ${-r} L ${r * 0.65} ${-r * 0.78} L ${r} ${-r * 0.05} L ${r * 0.72} ${r * 0.7} L ${r * 0.05} ${r} L ${-r * 0.68} ${r * 0.74} Z`} fill="#EFE6D2" stroke="#9E927C" strokeWidth={r * 0.05} strokeLinejoin="round" />
+    <path d={`M ${r * 0.1} ${r * 0.98} L ${r * 0.72} ${r * 0.7} L ${r} ${-r * 0.05} L ${r * 0.35} ${r * 0.2} Z`} fill="#CFC4AE" />
+    <path d={`M ${-r * 0.6} ${-r * 0.5} L ${-r * 0.05} ${-r * 0.15} L ${r * 0.5} ${-r * 0.55} M ${-r * 0.05} ${-r * 0.15} L ${-r * 0.2} ${r * 0.55} M ${-r * 0.8} ${r * 0.15} L ${-r * 0.3} ${r * 0.1}`} stroke="#B3A78F" strokeWidth={r * 0.06} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <path d={`M ${-r * 0.85} ${-r * 0.2} L ${-r * 0.62} ${-r * 0.7}`} stroke="#FFE7B8" strokeWidth={r * 0.07} strokeLinecap="round" opacity={0.7} />
+  </g>
+);

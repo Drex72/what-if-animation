@@ -41,6 +41,15 @@ shot or a character.
 - **Focus rings scale with the camera.** At zoom 2 they fill the frame; wrap them in a `scale(0.4)` about the head.
 - **Unique ids.** A set that draws gradients, masks or clip paths takes an `id` prop; give each shot its own (`sh4`),
   and a different one again if the same set renders twice in one frame (a blurred copy behind a close-up).
+- **A hand can't touch the head.** The head is drawn after the arms, so a mitten raised to a temple or a mouth
+  disappears behind it, and an arm raised beside the head reads as a wave. In a close-up, leave the rig's arms down
+  and draw the arm yourself after the character: a sleeve path from off frame and a mitten at the prop, as the inserts
+  in `episodes/copy-paste/shots.tsx` do (that's how the preview run fed Mo a slice and put a phone to Pip's ear). In a
+  medium, act it with the head and a jolt instead.
+- **A grade on a whole shot needs a screen-sized filter box.** Filter the outer group with `filterUnits="userSpaceOnUse"`
+  and a 0..1920 x 0..1080 region: the default box is the content's, and sets draw far past the frame.
+- **A colour grade lifts black.** The preview look's matrix turned a black screen navy; draw true black outside the
+  graded group.
 
 ## Motion
 
@@ -59,6 +68,9 @@ shot or a character.
   hits an `until` cue at the next shot. Time the picture's action into the pause too (the skip episode snaps awake
   about 10 frames into each skip shot, after the word).
 - **Levelling is per stem.** `sfx.py` levels the whole effects stem, so lowering one event raises the rest.
+- **mixcheck's windows are 0.4 s,** longer than most pauses, so a hit placed correctly in the 0.3 s after a word
+  still gets flagged with it. When a flag sits on a word's last syllable, check that word in 0.1 s windows before
+  moving anything: a fricative tail ("face", "catch") under a bed or a hit that follows it is not a covered word.
 
 ## Pipeline
 

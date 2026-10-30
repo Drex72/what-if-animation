@@ -61,6 +61,7 @@ man in a suit: combed hair, charcoal suit, red tie). Render the cast sheet with
 | `blink, look, glasses` | 0..1 eyelids (1 draws a shut lid's curve: blinks and sleep), -1..1 eye direction, 0..1 shades dropping on |
 | `squash` | + squashes (landing), - stretches (jump), about the feet |
 | `sway` | how far loose things (drawstrings, bunches) swing |
+| `glint`, `glintColor` | 0..1 the eyes light up in the power's colour (default cyan); set it after `poseAt`, it isn't interpolated |
 
 Helpers: `poseAt(t, keys)` (eased keys, faces hold until their key), `faceAt(t, [[f, expr]...])` (a blink at each
 swap), `walkPose(x, phase, ground, scale, extra, facing)` (phase about 0.6 a frame; `ground` a number or a function
@@ -74,7 +75,10 @@ target)` (the arm angle that points at a world point).
 `fill` writes it in, or blank), `PaperStack`. For night episodes: `AlarmClock` (a digital bedside clock, `text` on its
 display), `WallCalendar` (a month, `crossed` days with red crosses, the next one drawing on with `drawing`;
 `calendarDay` gives a day's cell for a hand holding the marker), `OpenBook` (`turn` flips a page), `BookFlat`,
-`BookTower`, `LaptopBack` (a lid from behind, its screen light spilling round it). Add props here when an episode needs them, drawn in the same style:
+`BookTower`, `LaptopBack` (a lid from behind, its screen light spilling round it). From the preview run:
+`PizzaSlice` (from above, x y the tip, `bite` eats back from the tip, `drip` hangs cheese; squash it in y for a
+three-quarter view), `PizzaBox` (open and empty, `lid` stands the lid up), `Phone` (dark and glossy, or `on` with an
+incoming call: `caller`, `buzz`), `PaperBall`. Add props here when an episode needs them, drawn in the same style:
 flat fills, a darker shade on the side away from the light, a warm rim line on the lit edge, a contact shadow.
 
 For inserts, `Tabletop` (`furnish.tsx`) fills the frame with a surface seen from high above (wood or stone), its lit
