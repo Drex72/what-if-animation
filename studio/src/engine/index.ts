@@ -3,6 +3,7 @@ export * from './anim';
 export * from './actions';
 export * from './camera';
 export * from './rig';
+export * from './grounding';
 export * from './props';
 export * from './kit';
 export * from './light';
