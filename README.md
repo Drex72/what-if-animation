@@ -1,4 +1,4 @@
-# What If animation: a free skill for Claude Code and OpenCode
+# What If Drex: a free skill for Claude Code and OpenCode
 
 Type one line, "What if you could rewind 10 seconds?", and get a finished 15-25 second animated episode in the
 dusk-lit stick-figure style of the "What If" channels that took off on YouTube in October 2026.
@@ -40,8 +40,8 @@ shot, so there is nothing to drift.
 Clone it into your skills folder, then set up the studio once:
 
 ```bash
-git clone https://github.com/kelano86/what-if-animation ~/.claude/skills/what-if-animation
-cp -r ~/.claude/skills/what-if-animation/studio ./what-if-studio
+git clone https://github.com/kelano86/what-if-drex ~/.claude/skills/what-if-drex
+cp -r ~/.claude/skills/what-if-drex/studio ./what-if-studio
 cd what-if-studio && npm install
 ```
 
@@ -63,33 +63,33 @@ no cost, for a limited time, with no account or key. With this skill, that model
 ElevenLabs credits).
 
 1. Install the tools above, then OpenCode: `npm install -g opencode-ai`
-2. Make a folder for your episodes, put the skill in it under `.claude/skills/`, and add the `/what-if` command
+2. Make a folder for your episodes, put the skill in it under `.claude/skills/`, and add the `/what-if-drex` command
    (OpenCode doesn't list skills when you type `/`, so the command loads it for you).
 
    Windows (PowerShell):
 
    ```powershell
    mkdir what-if; cd what-if
-   git clone https://github.com/kelano86/what-if-animation .claude/skills/what-if-animation
+   git clone https://github.com/kelano86/what-if-drex .claude/skills/what-if-drex
    mkdir .opencode/commands
-   copy .claude/skills/what-if-animation/opencode/commands/what-if.md .opencode/commands/
+   copy .claude/skills/what-if-drex/opencode/commands/what-if-drex.md .opencode/commands/
    ```
 
    Mac or Linux:
 
    ```bash
    mkdir what-if && cd what-if
-   git clone https://github.com/kelano86/what-if-animation .claude/skills/what-if-animation
-   mkdir -p .opencode/commands && cp .claude/skills/what-if-animation/opencode/commands/what-if.md .opencode/commands/
+   git clone https://github.com/kelano86/what-if-drex .claude/skills/what-if-drex
+   mkdir -p .opencode/commands && cp .claude/skills/what-if-drex/opencode/commands/what-if-drex.md .opencode/commands/
    ```
 
    No git? Download the ZIP from GitHub and unzip it into `.claude/skills/` (the folder's name doesn't matter), then
-   copy `opencode/commands/what-if.md` from it into `.opencode/commands/`.
+   copy `opencode/commands/what-if-drex.md` from it into `.opencode/commands/`.
 3. Put your key in a file called `.env` in the same folder, one line: `ELEVENLABS_API_KEY=your-key`
 4. Start OpenCode **from inside that folder**: `cd` into it (on Windows you can right-click the folder and choose
    Open in Terminal), then type `opencode`. Started anywhere else, it won't find the skill or the command.
 5. Type `/models`, choose GLM-5.3-Flash Free, and press Ctrl+T until the reasoning level reads high.
-6. Type `/what-if What if you could pause everyone but you?` and leave it running. The first run copies the studio
+6. Type `/what-if-drex What if you could pause everyone but you?` and leave it running. The first run copies the studio
    into `what-if-studio/` and installs it, which adds a few minutes.
 
 Tips for the free model:
@@ -107,7 +107,7 @@ Tips for the free model:
 | `references/` | The formula, the measured look and checklists, the building-block catalogue, sound, traps |
 | `studio/` | The Remotion project: the engine (rig, sets, light, UI, the episode engine) and two example episodes |
 | `scripts/` | voice, plan, stills, board, sfx, mixcheck, motiongrid, master |
-| `opencode/commands/what-if.md` | The `/what-if` command for OpenCode |
+| `opencode/commands/what-if-drex.md` | The `/what-if-drex` command for OpenCode |
 
 ## The rules it follows
 
