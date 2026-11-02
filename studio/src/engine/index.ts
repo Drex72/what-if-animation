@@ -1,5 +1,7 @@
 // Everything an episode builds with, in one import: import { Study, Hero, poseAt, Marquee, ... } from '../../engine';
 export * from './anim';
+export * from './actions';
+export * from './camera';
 export * from './rig';
 export * from './props';
 export * from './kit';
