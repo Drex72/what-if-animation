@@ -14,6 +14,7 @@ schematic for the science beat, a cliffhanger blackout). Read the one closest to
 | File | What's in it |
 |---|---|
 | `references/formula.md` | The seven-beat What If formula, the 15-25 s shape, script rules, choosing a topic |
+| `references/direction.md` | Acting presets, motivated camera moves, and motion review guidance |
 | `references/look.md` | The measured look, pace, shot vocabulary, and the storyboard and motion checklists |
 | `references/kit.md` | The building blocks: engine, cast, sets, room kit, light, UI, looks, and how to add each |
 | `references/sound.md` | Writing sound events, prompts, levels, costs |
@@ -120,7 +121,7 @@ take their notes before animating.
 
 ### 6. Animate
 
-Bring each shot to life from its key pose: `poseAt` keys with anticipation, holds and overshoot, `faceAt` for
+Before animating, read `references/direction.md` and make a brief intention/action/contact/camera plan for each action shot. Prefer the optional `act` and `directedCamera` helpers where they improve readability; retain manual `poseAt` for custom choreography. Bring each shot to life from its key pose: `poseAt` keys with anticipation, holds and overshoot, `faceAt` for
 expressions, camera moves with `kf`, the power's look, the `fx`. Then render a draft and check the motion:
 
 ```bash

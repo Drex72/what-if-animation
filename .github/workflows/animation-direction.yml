@@ -1,0 +1,21 @@
+name: Animation direction typecheck
+on:
+  pull_request:
+    paths:
+      - 'studio/src/**'
+      - 'studio/package*.json'
+      - '.github/workflows/animation-direction.yml'
+  workflow_dispatch:
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: studio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install --no-audit --no-fund
+      - run: npm run typecheck
