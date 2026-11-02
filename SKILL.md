@@ -1,12 +1,12 @@
 ---
 name: what-if-animation
-description: Make a "What If" animated episode from one topic line ("What if you could rewind 10 seconds?"), in the dusk-lit stick-figure style of the What If channels that broke out on YouTube in October 2026. Writes the script on the seven-beat What If formula, voices it with ElevenLabs, lays out a shot list at the genre's pace, renders a storyboard of stills and self-checks it before animating, animates every frame in code (Remotion and SVG, with an original cast on one rig, rooms in perspective and light from lamps and windows), generates and syncs the sound, and masters a finished 15-25 s episode to -14 LUFS. Use when someone asks for a What If episode, animation or cartoon, "make a what if video about X", a stick-figure explainer in this style, or to run the free What If skill.
+description: Make a complete, cinematic ~4-minute What If animated story from a hypothetical question, with conditions, verified facts, character journey, escalating consequences and a resolved ending, using SVG and Remotion. Also supports explicitly requested short-form clips.
 ---
 
 # What If animation
 
-One topic line in, a finished 15-25 second episode out. Every frame is SVG that Claude writes (rendered by
-Remotion); the voice and the sound come from ElevenLabs. Two examples ship in `studio/src/episodes/`, both ready to
+One topic line in, a complete animated story of about four minutes out (default 210–270 seconds, target 240). The question starts a story with rules, factual context, a protagonist's journey, meaningful choices, and an ending. Every frame is SVG that Claude writes (rendered by
+Remotion); the voice and the sound come from ElevenLabs. The existing short examples are compatibility demos, not the new target format. Two examples ship in `studio/src/episodes/`, both ready to
 render: `rewind` ("What if you could rewind 10 seconds?", the proof clip: shots played backwards as the power) and
 `copy-paste` ("What if you could copy and paste anything?", the skill's first full run: a new kitchen set, a
 schematic for the science beat, a cliffhanger blackout). Read the one closest to your topic before you start.
@@ -58,11 +58,10 @@ Work through the steps in order. Each ends on something you look at before the n
 
 ### 1. Script
 
-Read `references/formula.md`. Search YouTube for the premise first: if a What If channel already has that exact
-episode, change the power or the rule. From the topic line, decide the power's word, its rule, three escalating
-demos and the turn (one real fact with a number). Write `src/episodes/<slug>/episode.json` with `id` (PascalCase,
+Read `references/formula.md` (the story format and resolved ending are required unless the user explicitly requests a short). Search YouTube for the premise first: if a What If channel already has that exact
+episode, change the power or the rule. From the topic line, decide the hypothesis, clear conditions, protagonist and goal, a causal journey, verified real-world consequences, a crisis, and the eventual resolution (one real fact with a number). Write `src/episodes/<slug>/episode.json` with `format: "story"`, `targetSeconds: 240`, a `story` outline, `id` (PascalCase,
 the composition name), `slug`, `topic`, `title` (two lines), `script` (one entry per beat) and `science` (each fact:
-the claim, the working, the source). 45 to 65 words. Read it aloud at pace: every line must be a picture.
+the claim, the working, the source). For story mode, aim for roughly 500–620 spoken words across 7–14 developed beats and plan for a resolved ending. Write the protagonist, goal, conditions, stakes, turning point, and resolution into the optional `story` field. Every scene must be visually depictable. Only use 45–65 words if short format is explicitly requested.
 
 ### 2. Voice
 
@@ -70,14 +69,14 @@ the claim, the working, the source). 45 to 65 words. Read it aloud at pace: ever
 python <skill>/scripts/voice.py <slug>
 ```
 
-One ElevenLabs take with character timestamps (the 356-character copy-paste take cost 78 credits), then the pauses
-cut to the genre's pace: `public/<slug>/voice.wav` and `src/episodes/<slug>/words.json`. Check the length (15-25 s)
+One narrated performance with character timestamps (the 356-character copy-paste take cost 78 credits), then the pauses
+cut to the genre's pace: `public/<slug>/voice.wav` and `src/episodes/<slug>/words.json`. Check the length (story mode: 210–270 s; aim ~240 s, short mode: 15–25 s)
 and the word times it prints. Retune pauses with `gaps` in `episode.json` and re-run: the take is cached, so that's free. Change a word
 and it calls the API again.
 
 ### 3. Shot list
 
-Design one shot per picture in the script (usually 9 to 14), varying the size and angle every cut (wide, insert,
+Design shots around the causal story (typically 35 to 65 across four minutes), varying the size and angle every cut (wide, insert,
 medium, close-up, over the shoulder, high, low; see `references/look.md`). Add to `episode.json`:
 
 - `shots`: `{ "id": "S1", "size": "medium", "set": "kitchen", "key": 14, "note": "what we see" }` (`key` is the
@@ -90,8 +89,7 @@ medium, close-up, over the shoulder, high, low; see `references/look.md`). Add t
 python <skill>/scripts/plan.py <slug>
 ```
 
-It writes `timeline.json` and `out/<slug>/shotlist.md` and prints the pace. Aim for 27+ cuts a minute in the
-opening and no static shot over about 3 s; fix what it flags before drawing anything.
+It writes `timeline.json` and `out/<slug>/shotlist.md` and prints the pace. Use fast cutting where the hook or crisis warrants it, but allow composed 3–8-second shots and slower emotional scenes. Avoid static stretches with no narrative change; fix genuine issues before drawing.
 
 ### 4. Storyboard
 
@@ -164,6 +162,10 @@ python <skill>/scripts/master.py <slug>
 Renders, brings the mix to -14 LUFS with peaks under -1 dBTP, and writes `out/<slug>/report.json` (length, loudness,
 pace, credits). Watch the final file once through with sound. Hand over `out/<slug>/<slug>-final.mp4` and
 `out/<slug>/storyboard.jpg`, with the length, the ElevenLabs credits used, and anything you'd still improve.
+
+## Four-minute delivery expectations
+
+Produce a complete beginning–middle–end story. Verify any numerical or scientific claim before narration; explain hypothetical assumptions honestly. For a long episode, work in coherent scene blocks and review preview renders before producing the full master. The existing Rewind and CopyPaste clips are intentionally kept short; do not stretch or overwrite them. If the user's request explicitly asks for a short, set `format: "short"`.
 
 ## Where an episode lives
 
