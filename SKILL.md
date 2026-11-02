@@ -13,7 +13,7 @@ schematic for the science beat, a cliffhanger blackout). Read the one closest to
 
 | File | What's in it |
 |---|---|
-| `references/formula.md` | The seven-beat What If formula, the 15-25 s shape, script rules, choosing a topic |
+| `references/formula.md` | Four-minute narrative structure, factual grounding, resolved endings, and optional short format |
 | `references/direction.md` | Acting presets, motivated camera moves, and motion review guidance |
 | `references/look.md` | The measured look, pace, shot vocabulary, and the storyboard and motion checklists |
 | `references/kit.md` | The building blocks: engine, cast, sets, room kit, light, UI, looks, and how to add each |
@@ -61,7 +61,7 @@ Work through the steps in order. Each ends on something you look at before the n
 Read `references/formula.md` (the story format and resolved ending are required unless the user explicitly requests a short). Search YouTube for the premise first: if a What If channel already has that exact
 episode, change the power or the rule. From the topic line, decide the hypothesis, clear conditions, protagonist and goal, a causal journey, verified real-world consequences, a crisis, and the eventual resolution (one real fact with a number). Write `src/episodes/<slug>/episode.json` with `format: "story"`, `targetSeconds: 240`, a `story` outline, `id` (PascalCase,
 the composition name), `slug`, `topic`, `title` (two lines), `script` (one entry per beat) and `science` (each fact:
-the claim, the working, the source). For story mode, aim for roughly 500–620 spoken words across 7–14 developed beats and plan for a resolved ending. Write the protagonist, goal, conditions, stakes, turning point, and resolution into the optional `story` field. Every scene must be visually depictable. Only use 45–65 words if short format is explicitly requested.
+the claim, the working, the source). For story mode, aim for roughly 500–620 spoken words across 7–14 developed beats and plan for a resolved ending. Write the protagonist, goal, conditions, stakes, turning point, and resolution into the required `story` field for new story-format episodes. Every scene must be visually depictable. Only use 45–65 words if short format is explicitly requested.
 
 ### 2. Voice
 
