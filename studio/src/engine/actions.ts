@@ -3,7 +3,7 @@
  * All times are shot-local frames; no React state, randomness or physics engine.
  * Presets hold the start pose before the action and the finish pose afterwards.
  */
-import { clamp, easeInOut, easeOut, lerp } from './anim';
+import { clamp, easeInOut } from './anim';
 import { basePose, poseAt, reachAngle, type Pose, type Expr } from './rig';
 
 type Point = { x: number; y: number };
@@ -51,7 +51,7 @@ export function act(name: ActionName, t: number, options: ActionOptions = {}): P
     return poseAt(t, keys, from);
   }
   if (name === 'turn') {
-    const yaw = bounded(options.yaw ?? -from.yaw || 0.8, -1, 1);
+    const yaw = bounded(options.yaw ?? (from.yaw === 0 ? 0.8 : -from.yaw), -1, 1);
     return poseAt(t, [
       { f: start, p: {} },
       { f: prepare, p: { headTilt: from.headTilt - 7 * intensity, look: Math.sign(yaw - from.yaw) } },
