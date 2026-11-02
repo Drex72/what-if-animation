@@ -1,9 +1,9 @@
 ---
-name: what-if-animation
+name: what-if-drex
 description: Make a complete, cinematic ~4-minute What If animated story from a hypothetical question, with conditions, verified facts, character journey, escalating consequences and a resolved ending, using SVG and Remotion. Also supports explicitly requested short-form clips.
 ---
 
-# What If animation
+# What If Drex
 
 One topic line in, a complete animated story of about four minutes out (default 210–270 seconds, target 240). The question starts a story with rules, factual context, a protagonist's journey, meaningful choices, and an ending. Every frame is SVG that Claude writes (rendered by
 Remotion); the voice and the sound come from ElevenLabs. The existing short examples are compatibility demos, not the new target format. Two examples ship in `studio/src/episodes/`, both ready to
@@ -21,6 +21,10 @@ schematic for the science beat, a cliffhanger blackout). Read the one closest to
 | `references/traps.md` | Everything that cost time on the two example episodes |
 | `studio/` | The Remotion project: copy it once, then every episode lives in it |
 | `scripts/` | voice, plan, stills, board, sfx, mixcheck, motiongrid, master (Python 3.9+ and Node) |
+
+## Grounding policy (mandatory)
+
+Characters must be visually supported by the environment by default. Before rendering each grounded standing or walking shot, use `plantPose(pose, floorY)` or `plantPoseOnSurface(pose, stepTop)` from `engine/grounding.ts`, after the final pose is animated. Ground at each foot's actual world X; the helper adjusts hip height only. For sitting, lying, leaning, or climbing, stage explicit contact with the chair, bed, wall, or stairs instead of applying standing-foot grounding. Show a readable contact shadow and visible support in the scene. Never place a hero over an arbitrary floating block to disguise a placement error. For jumps, falls, flight, zero gravity or intentional suspended motion, explicitly use `{ airborne: true }` or skip grounding and animate the takeoff, arc and landing. Do not silently ground airborne animation. Check start, middle and end frames for unexpected floating or feet penetrating props. See `references/direction.md`.
 
 ## Rules
 
@@ -119,7 +123,7 @@ take their notes before animating.
 
 ### 6. Animate
 
-Before animating, read `references/direction.md` and make a brief intention/action/contact/camera plan for each action shot. Prefer the optional `act` and `directedCamera` helpers where they improve readability; retain manual `poseAt` for custom choreography. Bring each shot to life from its key pose: `poseAt` keys with anticipation, holds and overshoot, `faceAt` for
+Before animating, read `references/direction.md` and make a brief intention/action/contact/camera plan for each action shot. Prefer the optional `act` and `directedCamera` helpers where they improve readability; retain manual `poseAt` for custom choreography. Before rendering, make standing/idle characters physically supported using `plantPose` and check for contact in the storyboard and motion grids. Bring each shot to life from its key pose: `poseAt` keys with anticipation, holds and overshoot, `faceAt` for
 expressions, camera moves with `kf`, the power's look, the `fx`. Then render a draft and check the motion:
 
 ```bash

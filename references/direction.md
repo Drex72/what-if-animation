@@ -37,3 +37,18 @@ Inspect start, anticipation, contact, settle, and end frames, not merely the sto
 - sound effects hit the visible contact, without masking narration.
 
 Keep a before/after comparison of the same episode. Do not claim a quality improvement without reviewing rendered motion. These helpers do not simulate weight, collisions, or actual lighting physics.
+
+## Physical grounding (mandatory)
+
+A character stands on the actual floor, stairs or another clearly drawn supporting object, never hovers as a default pose. The ground-contact helper lives in `engine/grounding.ts` and is exported from the engine barrel. Apply it **after** action posing and facial acting, in world coordinates:
+
+```tsx
+const raw = act('point', t, { from: startingPose, duration: 18 });
+const planted = plantPose(raw, FLOOR_Y);
+// Stairs: plantPoseOnSurface(raw, stepTop)
+// Intentional jump/fall: plantPose(raw, FLOOR_Y, { airborne: true })
+```
+
+This is a staging aid, not a physics solver. It uses each foot's actual X coordinate on non-flat surfaces, and aligns the most constrained foot without forcing both legs into a fixed position. Sitting, lying and leaning need hand-authored support/contact poses (seat, bed, wall) and often occlusion layers, not foot planting. A planted pose should include a contact shadow at the support, and the set's floor must agree with the character's position. For deliberate flight or jump arcs, skip grounding and visibly animate takeoff and landing.
+
+Storyboard gate: at least one clear contact or a visibly justified airborne action; no body hovering above desks, tiny unrelated blocks, or detached shadows. Inspect start, contact, and end frames, not just the key pose.
