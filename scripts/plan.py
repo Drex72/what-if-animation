@@ -114,6 +114,13 @@ print(f'pace: {per_min:.0f} cuts/min overall, {first10 / min(10, dur) * 60:.0f} 
 if ep.get('format', 'short') == 'short' and per_min < 24:
     print('  ! slower than the genre opening (about 27 cuts a minute): split long shots or cut on more words')
 if ep.get('format') == 'story':
+    story = ep.get('story', {})
+    missing = [k for k in ('protagonist', 'goal', 'conditions', 'stakes', 'turningPoint', 'resolution') if not story.get(k)]
+    if missing:
+        print('  ! missing story direction fields: ' + ', '.join(missing))
+    beats = ' '.join(str(s.get('beat', '')).lower() for s in ep.get('script', []))
+    if not any(word in beats for word in ('ending', 'resolution', 'conclusion')):
+        print('  ! script has no explicitly labelled ending/resolution beat')
     target = ep.get('targetSeconds', 240)
     if not 210 <= dur <= 270:
         print(f'  ! story duration {dur:.1f}s is outside the 210–270s target; revise narration or pacing (target {target}s)')
