@@ -62,6 +62,8 @@ else:
 # ---------------------------------------------------------------- tighten the pauses
 words = load_json(raw_words)
 G = {'word': 0.12, 'comma': 0.2, 'sentence': 0.3, 'question': 0.45, 'pairs': {}}
+if ep.get('format') == 'story':
+    G.update({'word': 0.22, 'comma': 0.35, 'sentence': 0.55, 'question': 0.65})
 G.update(ep.get('gaps', {}))
 x = decode(raw_mp3)
 cuts = []

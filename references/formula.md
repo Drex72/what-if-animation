@@ -1,89 +1,57 @@
-# The script: the seven-beat What If formula
+# Four-minute What If story formula
 
-Decoded on 21 Oct 2026 from five scripts across four channels that broke out with this format in October 2026
-(Ifverse, FunNotSoFun, IFinity, Could've Been Tales). The full episodes run 7 to 10 minutes and hit all seven beats;
-the skill makes a 15 to 25 second episode, which is the cold open of one: beats 1 to 4 in full, 5 to 7 folded into
-the last line.
+## Default format and promise
 
-## The seven beats
+The default is a **complete 3:30–4:30 story**, targeting **4:00 (240 seconds)**. It is NOT a 15–25 second teaser and must not end with a cliffhanger, a "part two", or an unanswered central question. Short format is only for an explicit user request (set `format: "short"` in episode.json).
 
-1. **Cold open in the middle of the action.** A flash-forward to the climax, or three or four quick demos of the
-   power.
-2. **The premise and its rules.** What changed overnight, and the rules it comes with.
-3. **The fun part.** Escalating wins in everyday life.
-4. **The not-so-fun part.** The cost, with real science and real numbers woven into the story ("That's real.").
-5. **Someone powerful notices.** A man in a suit, robbers, a government.
-6. **A moral choice with family at stake,** usually a little sister.
-7. **Cliffhanger.** "Part 1 of 2", a question for the comments, sometimes an "is any of this real?" section and
-   sourced science notes in the description.
+A question is the opening premise, **not the whole episode**. Give an identifiable protagonist a goal, concrete constraints, choices and consequences, and a meaningful conclusion. Tell an engaging original story rather than reciting a generic list of superpowers.
 
-Recurring cast: you (second person), a best friend, a little sister, mum. In our cast: Pip is "you", Mo is the best
-friend, and `sis`, `mom` and `suit` are on the rig for beats 5 and 6.
+## Story spine (recommended timings)
 
-## The 15 to 25 second shape
+| Part | Time | Job |
+|---|---:|---|
+| 1. Hook / flash-forward | 0:00–0:20 | Show an intriguing consequence or moment of jeopardy; start with action |
+| 2. What if + rules | 0:20–0:50 | State the question and 2–3 explicit conditions or limitations |
+| 3. Discovery | 0:50–1:25 | Follow the character testing the rules; establish a goal and stakes |
+| 4. Journey / escalating choices | 1:25–2:15 | A chain of cause → choice → consequence, changing locations or relationships when justified |
+| 5. Reality check | 2:15–2:55 | Bring in two or three *verified* facts/numbers and explain what remains speculative |
+| 6. Crisis / decision | 2:55–3:35 | An irreversible cost or difficult choice; protagonist acts, rather than watching |
+| 7. Ending / reflection | 3:35–4:00 | Show the outcome, resolve the central narrative, and earn one closing thought |
 
-| Beat | Seconds | What it does | Example (rewind) |
-|---|---|---|---|
-| 1. Cold open | 0 to 11 | Three quick demos: a small everyday problem, the power, the win. The power's word is said every time. | "You knock your coffee off the desk. Rewind. You catch it." x3 |
-| 2. Premise | 11 to 15 | The title card says it: "What if you could ...?", plus one rule. | "What if you could rewind ten seconds, any time you want?" |
-| 3. Fun | 1 to 2 s | One line, or one more escalation. | "Sounds amazing." |
-| 4 to 7. The turn | last 2 to 6 s | The cost, ideally one real fact with a number and "That's real.", then a line that leaves a question open. | "It's about to ruin your life." |
+These are directional targets. Let story logic determine the exact lengths, not rigid timestamp compliance.
 
-A longer cut (40 to 60 s) adds beat 4 properly (the fact, then its consequence on screen), the suit noticing (5)
-and the sister in danger (6), and ends on "Part 1".
+## Story requirements
 
-## Writing rules
+1. **A central character with a goal.** What do they want before the hypothetical? What changes after it?
+2. **Conditions established early.** Define what the world allows and does not allow; obey the rules thereafter. The hypothesis may break physics, but its consequences must follow consistently from the premise.
+3. **A causal journey.** Each major scene must change the character's knowledge, relationships, options or stakes. No repetitive montage of unrelated demonstrations.
+4. **Evidence woven into events.** Verify scientific or historical claims with actual sources in `science`, include units and assumptions, distinguish known facts from story assumptions. Don't invent data to support the premise.
+5. **Real ending.** Resolve the external problem and show what it costs, saves, or teaches the protagonist. A final thought-provoking sentence is fine, but not a cliffhanger replacing the conclusion.
+6. **Visual direction.** Set the emotional tone and location of each sequence; characters need meaningful acting and camera choices, not simply moving mouths to narration.
 
-- **Second person, present tense, short sentences.** Three to eight words. "Copy a cookie. Paste." beats "Imagine if
-  you were able to duplicate a cookie."
-- **Every line is a picture.** Each demo has to read in one shot with no text on screen: a mug, a stair, a quiz, a
-  cookie, a friend. If a line needs a caption to be understood, rewrite the line.
-- **The power has a word, a sound and a look.** "Rewind" plus tape whirr plus a stopwatch counting back; "Copy...
-  Paste" plus a selection box plus a pop. Say the word in every demo, so the viewer learns the grammar by the third.
-- **Escalate the demos.** Small and selfish, then useful, then a little uncanny (a cookie, the homework, your best
-  friend). The third demo should make the viewer slightly uneasy: it sets up the turn.
-- **One real fact in the turn, with a number, checked.** Work the arithmetic, write it in the episode's `science`
-  field with its source, and only then put it in the script. "That's real." goes straight after it. Never invent a
-  number, never round one into a different claim.
-- **End on a question or a threat,** never a resolution: "So where are yours coming from?", "It's about to ruin
-  your life."
-- **Length:** 45 to 65 words lands at 15 to 25 seconds after voice.py tightens the pauses (about 2.7 words a
-  second). Count before you call the voice: every character costs credits.
-- **The title card** is the premise, in capitals: line 1 `WHAT IF YOU COULD`, line 2 the power in four words or
-  fewer with a question mark. One word of line 2 can pulse as the accent (`10`, `ANYTHING`).
+## Script and pace
 
-## Choosing a topic
+Aim for **approximately 500–620 spoken words** at a natural storytelling pace around **130–155 words/minute**, then adjust using the rendered voice duration, not word count alone. `script` is an array of scenes or beats: each entry may be several sentences, with an identifiable `beat` and `text`. Use second-person or third-person consistently. Vary sentence length; leave breathing room for moments that matter.
 
-- An everyday power with clear rules and a hidden cost works best: time (rewind, pause, skip), copies, senses (hear
-  thoughts, see an hour ahead), body (never sleep, 10x reaction), money, luck.
-- The cost should come from real science (energy, biology, physics, economics), so beat 4 can teach something true.
-- Don't remake a channel's episode: search YouTube for the premise first, and if a What If channel already has that
-  exact title, pick a different power or a different rule. Most everyday powers have been done somewhere (copy-paste
-  turned up a comedy short and a "Copy Powers" episode); the story, the rule and the turn are what make it ours.
-  The formula is shared; the stories are ours.
-- No real people, no brands, no famous characters, nothing that resembles one.
+Plan **about 35–65 shots** rather than 9–14 (adapt to action); many shots will be 3–8 seconds, with occasional longer moving shots and quicker cuts during the hook or crisis. Avoid 200+ cuts or artificially keeping 27 cuts/min for the whole story. A calm emotional moment can hold if something meaningful develops inside it.
 
-## episode.json: the script part
+At the draft stage define:
+- `format: "story"` (default if absent for new episodes)
+- `targetSeconds: 240`
+- `story`: an object with `protagonist`, `goal`, `conditions`, `stakes`, `turningPoint`, and `resolution`
+- `script`: 7–14 scene or beat entries with `beat`, `text`, optional `location` and `intent`
+- `science`: sources, claim, working/assumptions
 
-The copy-paste example (`studio/src/episodes/copy-paste/episode.json`), 61 words, 23 s:
+After voice generation, adjust pacing/story and rerun voice only when necessary. Maintain shot cue alignment with `words.json`; don't assume fixed timings.
 
-```json
-"topic": "What if you could copy and paste anything?",
-"title": ["WHAT IF YOU COULD", "COPY AND PASTE ANYTHING?"],
-"script": [
-  {"beat": "1 cold open, demo 1 (small and selfish)", "text": "Copy a cookie. Paste. Free cookies, forever."},
-  {"beat": "1 cold open, demo 2 (useful)", "text": "Copy your homework. Paste. Done."},
-  {"beat": "1 cold open, demo 3 (a little uncanny)", "text": "Copy your best friend. Paste. Okay, that's weird."},
-  {"beat": "2 the premise (title card)", "text": "What if you could copy and paste anything?"},
-  {"beat": "4 the turn: the cost, one real fact", "text": "One catch: a copy can't come from nothing. One cookie, made from pure energy, needs every power plant on Earth running for over ten minutes. That's real."},
-  {"beat": "5-7 folded into a question", "text": "So where are yours coming from?"}
-],
-"science": [
-  {"claim": "One cookie made from pure energy needs every power plant on Earth running for over ten minutes.",
-   "working": "A 30 g cookie: E = mc^2 = 2.70e15 J. World electricity, 29,925 TWh in 2023 = 3.4e12 W on average. 2.70e15 / 3.4e12 = about 13 minutes. Over ten minutes holds above about 24 g; the schematic states the 30 g.",
-   "source": "mass-energy equivalence; Ember, Global Electricity Review 2024"}
-]
-```
+## Ending checklist
 
-`voice.py` joins the beats' text with spaces and sends it as one take, so the read flows; the beats are for you and
-for the storyboard.
+- Can viewers explain what happened to the protagonist?
+- Did established rules shape the outcome?
+- Did the factual section change the story rather than interrupt it?
+- Is there a demonstrated resolution, not merely a question or ominous blackout?
+- Does the final image communicate the ending even without the voice?
+
+## Short episodes
+
+Legacy 15–25 second examples remain valid demonstrations. To intentionally make one, use `format: "short"`; the existing compressed seven-beat, 45–65-word format may be followed. Don't retrofit the shipped Rewind and CopyPaste examples into four minutes by stretching their timelines.

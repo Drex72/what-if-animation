@@ -111,10 +111,23 @@ first10 = len([c for c in cuts if c < 10 * FPS])
 per_min = len(cuts) / dur * 60
 print(f'{len(segments)} segments, {len(ids)} shots, {dur:.1f} s ({end} frames)')
 print(f'pace: {per_min:.0f} cuts/min overall, {first10 / min(10, dur) * 60:.0f} cuts/min in the first 10 s; median shot {statistics.median(lens):.1f} s, longest {max(lens):.1f} s')
-if per_min < 24:
+if ep.get('format', 'short') == 'short' and per_min < 24:
     print('  ! slower than the genre opening (about 27 cuts a minute): split long shots or cut on more words')
+if ep.get('format') == 'story':
+    story = ep.get('story', {})
+    missing = [k for k in ('protagonist', 'goal', 'conditions', 'stakes', 'turningPoint', 'resolution') if not story.get(k)]
+    if missing:
+        print('  ! missing story direction fields: ' + ', '.join(missing))
+    beats = ' '.join(str(s.get('beat', '')).lower() for s in ep.get('script', []))
+    if not any(word in beats for word in ('ending', 'resolution', 'conclusion')):
+        print('  ! script has no explicitly labelled ending/resolution beat')
+    target = ep.get('targetSeconds', 240)
+    if not 210 <= dur <= 270:
+        print(f'  ! story duration {dur:.1f}s is outside the 210–270s target; revise narration or pacing (target {target}s)')
+    if len(segments) < 25:
+        print(f'  ! only {len(segments)} story segments: check that the four-minute journey is visual, not a long monologue')
 for s in segments:
-    if (s['b'] - s['a']) / FPS > 4:
+    if (s['b'] - s['a']) / FPS > (12 if ep.get('format') == 'story' else 4):
         print(f'  ! {s["shot"]} holds {(s["b"] - s["a"]) / FPS:.1f} s: give it action inside (a move, a light change, a push in) or split it')
 rows = ['| # | Shot | Size | In | Length | Clock | Look | Words |', '|---|---|---|---|---|---|---|---|']
 for k, s in enumerate(segments):
